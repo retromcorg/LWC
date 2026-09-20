@@ -5,7 +5,7 @@ import com.griefcraft.lwc.LWC;
 import com.griefcraft.scripting.ModuleException;
 import com.griefcraft.util.Updater;
 import com.griefcraft.util.config.Configuration;
-import com.mysql.jdbc.exceptions.jdbc4.CommunicationsException;
+import com.mysql.cj.jdbc.exceptions.CommunicationsException;
 import org.bukkit.Bukkit;
 
 import java.io.File;

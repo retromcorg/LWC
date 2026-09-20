@@ -15,14 +15,12 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.BlockState;
 import org.bukkit.entity.Player;
-import org.bukkit.event.block.BlockBreakEvent;
-import org.bukkit.event.block.BlockListener;
-import org.bukkit.event.block.BlockPistonExtendEvent;
-import org.bukkit.event.block.BlockPlaceEvent;
-import org.bukkit.event.block.BlockRedstoneEvent;
-import org.bukkit.event.block.SignChangeEvent;
+import org.bukkit.event.block.*;
+import org.bukkit.material.Attachable;
 import org.bukkit.material.MaterialData;
 import org.bukkit.material.PistonBaseMaterial;
+
+import java.util.*;
 
 public class LWCBlockListener extends BlockListener {
 
@@ -30,6 +28,35 @@ public class LWCBlockListener extends BlockListener {
      * The plugin instance
      */
     private LWCPlugin plugin;
+    private Set<Material> attachmentsTopToCheck = new HashSet<>(
+        Arrays.asList(
+            Material.SAPLING,
+            Material.POWERED_RAIL,
+            Material.DETECTOR_RAIL,
+            Material.LONG_GRASS,
+            Material.DEAD_BUSH,
+            Material.YELLOW_FLOWER,
+            Material.RED_ROSE,
+            Material.BROWN_MUSHROOM,
+            Material.RED_MUSHROOM,
+            Material.TORCH,
+            Material.FIRE,
+            Material.REDSTONE_WIRE,
+            Material.SIGN_POST,
+            Material.WOODEN_DOOR,
+            Material.RAILS,
+            Material.LEVER,
+            Material.STONE_PLATE,
+            Material.IRON_DOOR_BLOCK,
+            Material.WOOD_PLATE,
+            Material.REDSTONE_TORCH_OFF,
+            Material.REDSTONE_TORCH_ON,
+            Material.SNOW,
+            Material.CACTUS,
+            Material.SUGAR_CANE_BLOCK,
+            Material.CAKE_BLOCK
+        )
+    );
 
     public LWCBlockListener(LWCPlugin plugin) {
         this.plugin = plugin;
@@ -65,6 +92,10 @@ public class LWCBlockListener extends BlockListener {
 
     @Override
     public void onSignChange(SignChangeEvent event) {
+        if (event.isCancelled()) {
+            return;
+        }
+
         if (!LWC.ENABLED) {
             return;
         }
@@ -132,6 +163,47 @@ public class LWCBlockListener extends BlockListener {
             event.setCancelled(true);
             lwc.sendLocale(player, "protection.internalerror", "id", "BLOCK_BREAK");
             e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void onBlockPhysics(BlockPhysicsEvent event) {
+        if (event.isCancelled()) {
+            return;
+        }
+
+        if (!LWC.ENABLED) {
+            return;
+        }
+
+        if (event.getBlock().getType() != Material.SAND && event.getBlock().getType() != Material.GRAVEL) {
+            return;
+        }
+
+        LWC lwc = plugin.getLWC();
+        Block upNeighbor = event.getBlock().getRelative(BlockFace.UP);
+        if (attachmentsTopToCheck.contains(upNeighbor.getType()) && lwc.findProtection(upNeighbor) != null) {
+            event.setCancelled(true);
+
+            return;
+        }
+
+        List<BlockFace> horizontals = Arrays.asList(
+            BlockFace.NORTH,
+            BlockFace.EAST,
+            BlockFace.SOUTH,
+            BlockFace.WEST
+        );
+        for (BlockFace face: horizontals) {
+            Block neighbor = event.getBlock().getRelative(face);
+            if (neighbor.getState() != null && (neighbor.getState().getData() instanceof Attachable)) {
+                Attachable data = (Attachable) neighbor.getState().getData();
+                if (data.getAttachedFace() == face.getOppositeFace() && lwc.findProtection(neighbor) != null) {
+                    event.setCancelled(true);
+
+                    return;
+                }
+            }
         }
     }
 

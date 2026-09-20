@@ -63,13 +63,11 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.ContainerBlock;
 import org.bukkit.command.CommandSender;
-import org.bukkit.craftbukkit.entity.CraftHumanEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
 
-import java.lang.reflect.Method;
 import java.security.MessageDigest;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -1063,14 +1061,7 @@ public class LWC {
 
             // attempt super perms if we still have nothing
             if (permissions.getClass() == NoPermissions.class) {
-                try {
-                    Method method = CraftHumanEntity.class.getDeclaredMethod("hasPermission", String.class);
-                    if (method != null) {
-                        permissions = new SuperPermsPermissions();
-                    }
-                } catch(NoSuchMethodException e) {
-                    // server does not support SuperPerms
-                }
+                permissions = new SuperPermsPermissions();
             }
         }
 

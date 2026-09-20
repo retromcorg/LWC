@@ -4,6 +4,7 @@ import com.griefcraft.lwc.LWC;
 import com.griefcraft.scripting.ModuleLoader;
 import com.griefcraft.util.Updater;
 import org.yaml.snakeyaml.DumperOptions;
+import org.yaml.snakeyaml.LoaderOptions;
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.constructor.SafeConstructor;
 import org.yaml.snakeyaml.reader.UnicodeReader;
@@ -33,7 +34,7 @@ public class Configuration extends ConfigurationNode {
         options.setIndent(4);
         options.setDefaultFlowStyle(DumperOptions.FlowStyle.BLOCK);
 
-        yaml = new Yaml(new SafeConstructor(), new Representer(), options);
+        yaml = new Yaml(new SafeConstructor(new LoaderOptions()), new Representer(options), options);
 
         this.file = file;
     }

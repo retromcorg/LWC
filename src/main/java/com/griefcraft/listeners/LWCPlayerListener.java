@@ -12,6 +12,7 @@ import com.griefcraft.scripting.event.LWCProtectionInteractEvent;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
 import org.bukkit.block.ContainerBlock;
 import org.bukkit.craftbukkit.CraftChunk;
 import org.bukkit.craftbukkit.CraftWorld;
@@ -26,9 +27,21 @@ import org.bukkit.event.player.PlayerListener;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class LWCPlayerListener extends PlayerListener {
+    private final Set<Material> invalidPrivates = new HashSet<>(Arrays.asList(
+        Material.AIR,
+        Material.WATER,
+        Material.STATIONARY_WATER,
+        Material.LAVA,
+        Material.STATIONARY_LAVA,
+        Material.SNOW,
+        Material.FIRE
+    ));
 
     /**
      * The plugin instance
@@ -76,15 +89,32 @@ public class LWCPlayerListener extends PlayerListener {
 
     @Override
     public void onPlayerInteract(PlayerInteractEvent event) {
-        if (event.getAction() != Action.LEFT_CLICK_BLOCK && event.getAction() != Action.RIGHT_CLICK_BLOCK) {
+        if (event.isCancelled()) {
             return;
         }
+
+        LWC lwc = plugin.getLWC();
 
         if (!LWC.ENABLED) {
             return;
         }
 
-        LWC lwc = plugin.getLWC();
+        BlockFace face = event.getBlockFace();
+        Block target = event.getClickedBlock();
+        if (face != null) {
+            target = event.getClickedBlock().getRelative(face);
+        }
+        if (invalidPrivates.contains(target.getType())) {
+            Protection protection = lwc.findProtection(target);
+            if (protection != null) {
+                protection.remove();
+            }
+        }
+
+        if (event.getAction() != Action.LEFT_CLICK_BLOCK && event.getAction() != Action.RIGHT_CLICK_BLOCK) {
+            return;
+        }
+
         Player player = event.getPlayer();
         Block clickedBlock = event.getClickedBlock();
         Location location = clickedBlock.getLocation();

@@ -3,11 +3,9 @@ package com.griefcraft.integration.permissions;
 import com.griefcraft.integration.IPermissions;
 import com.griefcraft.lwc.LWC;
 
-import org.bukkit.craftbukkit.entity.CraftHumanEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.PermissionAttachmentInfo;
 
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,15 +28,7 @@ public class SuperPermsPermissions implements IPermissions {
     }
 
     public boolean permission(Player player, String node) {
-        try {
-            Method method = CraftHumanEntity.class.getDeclaredMethod("hasPermission", String.class);
-            if (method != null) {
-                return player.hasPermission(node);
-            }
-        } catch(NoSuchMethodException e) {
-            // server does not support SuperPerms
-        }
-        return false;
+        return player.hasPermission(node);
     }
 
     // modified implementation by ZerothAngel ( https://github.com/Hidendra/LWC/issues/88#issuecomment-2017807 )
@@ -50,17 +40,10 @@ public class SuperPermsPermissions implements IPermissions {
         }
 
         List<String> groups = new ArrayList<String>();
-        try {
-            Method method = CraftHumanEntity.class.getDeclaredMethod("getEffectivePermissions");
-            if (method != null) {
-                for (PermissionAttachmentInfo pai : player.getEffectivePermissions()) {
-                    if(pai.getPermission().startsWith(groupPrefix)) {
-                        groups.add(pai.getPermission().substring(groupPrefix.length()));
-                    }
-                }
+        for (PermissionAttachmentInfo pai : player.getEffectivePermissions()) {
+            if(pai.getPermission().startsWith(groupPrefix)) {
+                groups.add(pai.getPermission().substring(groupPrefix.length()));
             }
-        } catch(NoSuchMethodException e) {
-            // server does not support SuperPerms
         }
 
         return groups;
