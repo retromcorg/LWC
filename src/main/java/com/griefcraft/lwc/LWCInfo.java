@@ -7,13 +7,7 @@ public class LWCInfo {
      */
     public static String FULL_VERSION;
 
-    /**
-     * LWC's version.
-     * <p/>
-     * Initialized to bogus value, but it will be set properly once the plugin starts up based
-     * on the version listed in plugin.xml.
-     */
-    public static double VERSION;
+    public static String VERSION;
 
     /**
      * Rather than managing the version in multiple spots, I added this method which will be
@@ -23,7 +17,7 @@ public class LWCInfo {
      * @author morganm
      */
     public static void setVersion(String version) {
-        VERSION = Double.parseDouble(version);
+        VERSION = version;
         FULL_VERSION = version;
     }
 }

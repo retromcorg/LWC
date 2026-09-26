@@ -34,11 +34,6 @@ public class Updater {
     public final static String DEST_LIBRARY_FOLDER = "plugins/LWC/";
 
     /**
-     * The latest LWC version
-     */
-    private double latestPluginVersion = 0.00;
-
-    /**
      * Download a file
      *
      * @param updaterFile
@@ -87,13 +82,6 @@ public class Updater {
      */
     public String getFullNativeLibraryPath() {
         return getOSSpecificFolder() + getOSSpecificFileName();
-    }
-
-    /**
-     * @return the latest plugin version
-     */
-    public double getLatestPluginVersion() {
-        return latestPluginVersion;
     }
 
     /**

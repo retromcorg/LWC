@@ -2,9 +2,9 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.griefcraft</groupId>
+    <groupId>org.retromc</groupId>
     <artifactId>LWC</artifactId>
-    <version>3.58</version>
+    <version>3.59.0</version>
     <packaging>jar</packaging>
 
     <name>LWC</name>
@@ -20,6 +20,18 @@
             <url>https://repository.johnymuffin.com/repository/maven-public/</url>
         </repository>
     </repositories>
+
+    <distributionManagement>
+        <repository>
+            <id>legacyminecraft-nexus</id>
+            <url>https://repository.legacyminecraft.com/repository/maven-releases/</url>
+        </repository>
+
+        <snapshotRepository>
+            <id>legacyminecraft-nexus</id>
+            <url>https://repository.legacyminecraft.com/repository/maven-snapshots/</url>
+        </snapshotRepository>
+    </distributionManagement>
 
     <dependencies>
         <dependency>

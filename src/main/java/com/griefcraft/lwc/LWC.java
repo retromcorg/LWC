@@ -1154,7 +1154,6 @@ public class LWC {
         registerModule(new AdminReload());
         registerModule(new AdminRemove());
         registerModule(new AdminReport());
-        registerModule(new AdminUpdate());
         registerModule(new AdminVersion());
         registerModule(new AdminView());
         registerModule(new AdminQuery());
